@@ -14,7 +14,6 @@ const PREFIX = "/API/v1";
 const PORT = 3000;
 
 const db = require("./configs/Database");
-const { Server } = require("socket.io");
 
 app.use(
   cors({
