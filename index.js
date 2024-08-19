@@ -7,6 +7,8 @@ const http = require("http");
 
 //Main Routes declaration
 const createAuthenticationRoutes = require("./Routes/Authentication/Authentication");
+const createClientRoutes = require("./Routes/Client/Client");
+const createVehicleRoutes = require("./Routes/Vehicle/Vehicle");
 
 const app = express();
 app.use(express.static("public"));
@@ -39,6 +41,8 @@ const server = http.createServer(app);
 
 //Main routes
 app.use(PREFIX + "/Authentication", createAuthenticationRoutes(db));
+app.use(PREFIX + "/Client", createClientRoutes(db));
+app.use(PREFIX + "/Vehicle", createVehicleRoutes(db));
 
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
