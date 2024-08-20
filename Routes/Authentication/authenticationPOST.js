@@ -9,7 +9,7 @@ const authenticationPOST = (db) => {
     AuthenticationController.login(req, res, db);
   });
 
-  return router; // Ritorna il router per consentire l'utilizzo da parte dell'app principale
+  return router;
 };
 
 module.exports = authenticationPOST;

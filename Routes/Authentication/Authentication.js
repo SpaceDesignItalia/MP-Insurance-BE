@@ -5,8 +5,8 @@ const authenticationGET = require("./authenticationGET");
 const authenticationPOST = require("./authenticationPOST");
 
 const Authentication = (db) => {
-  router.use("/GET", authenticationGET(db)); // Passa il database a stafferGET
-  router.use("/POST", authenticationPOST(db)); // Passa il database a stafferPOST
+  router.use("/GET", authenticationGET(db));
+  router.use("/POST", authenticationPOST(db));
   return router;
 };
 
