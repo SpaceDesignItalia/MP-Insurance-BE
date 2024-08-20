@@ -7,7 +7,10 @@ const http = require("http");
 
 //Main Routes declaration
 const createAuthenticationRoutes = require("./Routes/Authentication/Authentication");
-const createCustomerRoutes = require("./Routes/Customer/Customer");
+const createClientRoutes = require("./Routes/Client/Client");
+const createVehicleRoutes = require("./Routes/Vehicle/Vehicle");
+const createCompanyRoutes = require("./Routes/Company/Company");
+const createPolicyRoutes = require("./Routes/Policy/Policy");
 
 const app = express();
 app.use(express.static("public"));
@@ -40,6 +43,10 @@ const server = http.createServer(app);
 
 //Main routes
 app.use(PREFIX + "/Authentication", createAuthenticationRoutes(db));
+app.use(PREFIX + "/Client", createClientRoutes(db));
+app.use(PREFIX + "/Vehicle", createVehicleRoutes(db));
+app.use(PREFIX + "/Company", createCompanyRoutes(db));
+app.use(PREFIX + "/Policy", createPolicyRoutes(db));
 app.use(PREFIX + "/Customer", createCustomerRoutes(db));
 
 server.listen(PORT, () => {
