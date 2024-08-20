@@ -9,6 +9,8 @@ const http = require("http");
 const createAuthenticationRoutes = require("./Routes/Authentication/Authentication");
 const createClientRoutes = require("./Routes/Client/Client");
 const createVehicleRoutes = require("./Routes/Vehicle/Vehicle");
+const createCompanyRoutes = require("./Routes/Company/Company");
+const createPolicyRoutes = require("./Routes/Policy/Policy");
 
 const app = express();
 app.use(express.static("public"));
@@ -43,6 +45,8 @@ const server = http.createServer(app);
 app.use(PREFIX + "/Authentication", createAuthenticationRoutes(db));
 app.use(PREFIX + "/Client", createClientRoutes(db));
 app.use(PREFIX + "/Vehicle", createVehicleRoutes(db));
+app.use(PREFIX + "/Company", createCompanyRoutes(db));
+app.use(PREFIX + "/Policy", createPolicyRoutes(db));
 
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

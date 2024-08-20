@@ -6,7 +6,6 @@ class VehicleModel {
         if (error) {
           reject(error);
         } else {
-          console.log(result.rows);
           resolve(result.rows);
         }
       });
