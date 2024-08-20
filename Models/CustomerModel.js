@@ -1,4 +1,37 @@
 class StafferModel {
+  static getAllCustomers(db) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public.client ORDER BY "firstName" ASC `;
+
+      db.query(query, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.rows);
+        }
+      });
+    });
+  }
+
+  static searchCustomer(db, searchTerm) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public.client WHERE "firstName" ILIKE $1 
+       OR "lastName" ILIKE $1 
+       OR "email" ILIKE $1 
+       ORDER BY "firstName" ASC`;
+
+      const value = [`%${searchTerm}%`];
+
+      db.query(query, value, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.rows);
+        }
+      });
+    });
+  }
+
   static createNewCustomer(db, CustomerData) {
     return new Promise((resolve, reject) => {
       const query = `INSERT INTO public.client("firstName", "lastName", "phoneNumber", "email")

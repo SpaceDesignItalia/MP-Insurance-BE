@@ -2,6 +2,30 @@
 const Customer = require("../Models/CustomerModel");
 
 class CustomerController {
+  static async getAllCustomers(res, db) {
+    try {
+      const customers = await Customer.getAllCustomers(db);
+
+      res.status(200).json(customers);
+    } catch (error) {
+      console.error("Errore nel recupero dei clienti:", error);
+      res.status(500).send("Recupero dei clienti fallito");
+    }
+  }
+
+  static async searchCustomer(req, res, db) {
+    try {
+      const searchTerm = req.query.searchTerm;
+
+      const customers = await Customer.searchCustomer(db, searchTerm);
+
+      res.status(200).json(customers);
+    } catch (error) {
+      console.error("Errore nel recupero dei clienti:", error);
+      res.status(500).send("Recupero dei clienti fallito");
+    }
+  }
+
   static async createNewCustomer(req, res, db) {
     try {
       const CustomerData = req.body.CustomerData;
