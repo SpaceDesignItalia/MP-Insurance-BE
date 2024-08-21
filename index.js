@@ -7,7 +7,7 @@ const http = require("http");
 
 //Main Routes declaration
 const createAuthenticationRoutes = require("./Routes/Authentication/Authentication");
-const createClientRoutes = require("./Routes/Client/Client");
+const createCustomerRoutes = require("./Routes/Customer/Customer");
 const createVehicleRoutes = require("./Routes/Vehicle/Vehicle");
 const createCompanyRoutes = require("./Routes/Company/Company");
 const createPolicyRoutes = require("./Routes/Policy/Policy");
@@ -43,7 +43,6 @@ const server = http.createServer(app);
 
 //Main routes
 app.use(PREFIX + "/Authentication", createAuthenticationRoutes(db));
-app.use(PREFIX + "/Client", createClientRoutes(db));
 app.use(PREFIX + "/Vehicle", createVehicleRoutes(db));
 app.use(PREFIX + "/Company", createCompanyRoutes(db));
 app.use(PREFIX + "/Policy", createPolicyRoutes(db));
