@@ -30,6 +30,16 @@ class PolicyController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  static async GetCalendarExpiration(req, res, db) {
+    try {
+      const policy = await Policy.GetCalendarExpiration(db);
+      console.log(policy);
+      res.status(200).json(policy);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = PolicyController;
