@@ -154,6 +154,39 @@ class PolicyModel {
       );
     });
   }
+
+  static GetCalendarExpiration(db) {
+    return new Promise((resolve, reject) => {
+      let query = `
+            SELECT 
+              public."policy"."policyId",
+              "endDate",
+              "firstName",
+              "lastName",
+              "phoneNumber",
+              "email",
+              "licensePlate",
+              "brand",
+              "model",
+              "amount",
+              "companyName"
+            FROM public."policy"
+            INNER JOIN public."client" ON public."policy"."clientId" = public."client"."clientId"
+            INNER JOIN public."vehicle" ON public."policy"."vehicleId" = public."vehicle"."vehicleId"
+            INNER JOIN public."insuranceCompany" ON public."policy"."companyId" = public."insuranceCompany"."companyId"
+            
+          `;
+
+      db.query(query, (error, results) => {
+        if (error) {
+          console.log(error);
+          return reject(error);
+        }
+
+        resolve(results.rows);
+      });
+    });
+  }
 }
 
 module.exports = PolicyModel;
