@@ -10,6 +10,17 @@ class PolicyController {
     }
   }
 
+  static async getPolicyByVehicleId(req, res, db) {
+    try {
+      const vehicleId = req.query.vehicleId;
+      const policyData = await Policy.getPolicyByVehicleId(db, vehicleId);
+
+      res.status(200).json(policyData);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
   static async searchPolicy(req, res, db) {
     try {
       const searchTerms = req.param.searchTerms;
