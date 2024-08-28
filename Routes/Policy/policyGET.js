@@ -11,6 +11,10 @@ const policyGET = (db) => {
     PolicyController.getAllPolicies(req, res, db);
   });
 
+  router.get("/GetPolicyByVehicleId", authenticateMiddleware, (req, res) => {
+    PolicyController.getPolicyByVehicleId(req, res, db);
+  });
+
   router.get("/SearchPolicy", authenticateMiddleware, (req, res) => {
     PolicyController.searchPolicy(req, res, db);
   });

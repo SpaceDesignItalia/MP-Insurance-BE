@@ -13,6 +13,18 @@ class CustomerController {
     }
   }
 
+  static async getCustomerById(req, res, db) {
+    try {
+      const clientId = req.query.clientId;
+      const customer = await Customer.getCustomerById(db, clientId);
+
+      res.status(200).json(customer);
+    } catch (error) {
+      console.error("Errore nel recupero del cliente:", error);
+      res.status(500).send("Recupero del cliente fallito");
+    }
+  }
+
   static async searchCustomer(req, res, db) {
     try {
       const searchTerm = req.query.searchTerm;

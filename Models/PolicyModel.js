@@ -45,6 +45,58 @@ class PolicyModel {
     });
   }
 
+  static getPolicyByVehicleId(db, vehicleId) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
+        "amount", "startDate", "endDate","brand", "model", "licensePlate", "status", "paymentStatus", "companyName", "companyLogo"
+        FROM public."policy" 
+        INNER JOIN public."client" USING("clientId")
+        INNER JOIN public."vehicle" USING("vehicleId")
+        INNER JOIN public."policyStatus" USING("statusId")
+        INNER JOIN public."policyPaymentStatus" USING("paymentStatusId")
+        INNER JOIN public."insuranceCompany" USING("companyId")
+        WHERE "vehicleId" = $1
+      `;
+
+      db.query(query, [vehicleId], (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+
+        const policy = results.rows[0];
+        const policyPromise = new Promise((resolve, reject) => {
+          const query = `
+            SELECT "policyId", "name" 
+            FROM public."policyTypes"
+            INNER JOIN public."insuranceType" USING("insuranceTypeId")
+            WHERE "policyId" = $1
+          `;
+
+          db.query(query, [policy.policyId], (error, results) => {
+            if (error) {
+              return reject(error);
+            }
+            // Aggiunge l'elenco dei tipi alla `policy`
+            policy.types = results.rows.map((row) => row.name);
+            resolve(policy);
+          });
+        });
+
+        // Wait for all policyPromises to resolve
+        policyPromise
+          .then((policyWithTypes) => {
+            // Fai qualcosa con la `policy` che ora include i `types`
+            console.log(policyWithTypes);
+            resolve(policyWithTypes);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    });
+  }
+
   static searchPolicy(db, searchTerms) {
     return new Promise((resolve, reject) => {
       const query = `SELECT p."policyId", CONCAT(c."firstName", ' ', c."lastName") AS "fullName", v."typeId", 

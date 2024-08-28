@@ -9,6 +9,10 @@ const customerGET = (db) => {
     CustomerController.getAllCustomers(res, db);
   });
 
+  router.get("/GetCustomerById", authenticateMiddleware, (req, res) => {
+    CustomerController.getCustomerById(req, res, db);
+  });
+
   router.get("/SearchCustomer", authenticateMiddleware, (req, res) => {
     CustomerController.searchCustomer(req, res, db);
   });

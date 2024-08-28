@@ -3,7 +3,8 @@ const Vehicle = require("../Models/VehicleModel");
 class VehicleController {
   static async GetClientVehicles(req, res, db) {
     try {
-      const vehicles = await Vehicle.GetClientVehicles(db, req.query.clientId);
+      const clientId = req.query.clientId;
+      const vehicles = await Vehicle.GetClientVehicles(db, clientId);
       res.status(200).json(vehicles);
     } catch (error) {
       console.error("Error while retrieving vehicles:", error);

@@ -13,6 +13,23 @@ class StafferModel {
     });
   }
 
+  static getCustomerById(db, clientId) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public.client WHERE "clientId" = $1`;
+
+      db.query(query, [clientId], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          if (result.rows[0] == undefined) {
+            reject(500);
+          }
+          resolve(result.rows[0]);
+        }
+      });
+    });
+  }
+
   static searchCustomer(db, searchTerm) {
     return new Promise((resolve, reject) => {
       const query = `SELECT * FROM public.client WHERE "firstName" ILIKE $1 
