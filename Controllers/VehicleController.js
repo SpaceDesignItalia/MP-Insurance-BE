@@ -11,6 +11,17 @@ class VehicleController {
       res.status(500).send("Failed to retrieve vehicles");
     }
   }
+
+  static async GetClientVehiclesUninsured(req, res, db) {
+    try {
+      const clientId = req.query.clientId;
+      const vehicles = await Vehicle.GetClientVehiclesUninsured(db, clientId);
+      res.status(200).json(vehicles);
+    } catch (error) {
+      console.error("Error while retrieving vehicles:", error);
+      res.status(500).send("Failed to retrieve vehicles");
+    }
+  }
 }
 
 module.exports = VehicleController;
