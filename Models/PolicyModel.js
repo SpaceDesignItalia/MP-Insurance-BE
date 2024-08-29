@@ -239,6 +239,38 @@ class PolicyModel {
       });
     });
   }
+
+  static getActivePolicies(db) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public.policy
+      INNER JOIN public."policyStatus" USING("statusId")
+      WHERE "status" = 'Attiva'`;
+
+      db.query(query, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(results.rows);
+      });
+    });
+  }
+
+  static getExpiringPolicies(db) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public.policy
+      INNER JOIN public."policyStatus" USING("statusId")
+      WHERE "status" = 'In Scadenza'`;
+
+      db.query(query, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(results.rows);
+      });
+    });
+  }
 }
 
 module.exports = PolicyModel;

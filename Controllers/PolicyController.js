@@ -49,6 +49,24 @@ class PolicyController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  static async getActivePolicies(req, res, db) {
+    try {
+      const policies = await Policy.getActivePolicies(db);
+      res.status(200).json(policies);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async getExpiringPolicies(req, res, db) {
+    try {
+      const policies = await Policy.getExpiringPolicies(db);
+      res.status(200).json(policies);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = PolicyController;
