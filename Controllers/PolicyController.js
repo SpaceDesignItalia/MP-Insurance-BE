@@ -23,8 +23,10 @@ class PolicyController {
 
   static async searchPolicy(req, res, db) {
     try {
-      const searchTerms = req.param.searchTerms;
-      const policies = await Policy.searchPolicy(db, searchTerms);
+      const searchFilter = req.query;
+      const policies = await Policy.searchPolicy(db, searchFilter);
+
+      res.status(200).json(policies);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
