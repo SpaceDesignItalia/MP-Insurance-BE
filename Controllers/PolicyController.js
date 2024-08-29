@@ -23,8 +23,10 @@ class PolicyController {
 
   static async searchPolicy(req, res, db) {
     try {
-      const searchTerms = req.param.searchTerms;
-      const policies = await Policy.searchPolicy(db, searchTerms);
+      const searchFilter = req.query;
+      const policies = await Policy.searchPolicy(db, searchFilter);
+
+      res.status(200).json(policies);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -45,6 +47,24 @@ class PolicyController {
       const policy = await Policy.GetCalendarExpiration(db);
       console.log(policy);
       res.status(200).json(policy);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async getActivePolicies(req, res, db) {
+    try {
+      const policies = await Policy.getActivePolicies(db);
+      res.status(200).json(policies);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async getExpiringPolicies(req, res, db) {
+    try {
+      const policies = await Policy.getExpiringPolicies(db);
+      res.status(200).json(policies);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

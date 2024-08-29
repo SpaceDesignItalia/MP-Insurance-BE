@@ -36,6 +36,16 @@ class VehicleController {
       res.status(500).send("Aggiunta del veicolo fallito");
     }
   }
+
+  static async getAllVehicles(req, res, db) {
+    try {
+      const vehicles = await Vehicle.getAllVehicles(db);
+      res.status(200).json(vehicles);
+    } catch (error) {
+      console.error("Error while retrieving vehicles:", error);
+      res.status(500).send("Failed to retrieve vehicles");
+    }
+  }
 }
 
 module.exports = VehicleController;

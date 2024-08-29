@@ -22,6 +22,15 @@ const policyGET = (db) => {
   router.get("/GetCalendarExpiration", (req, res) => {
     PolicyController.GetCalendarExpiration(req, res, db);
   });
+
+  router.get("/GetActivePolicies", authenticateMiddleware, (req, res) => {
+    PolicyController.getActivePolicies(req, res, db);
+  });
+
+  router.get("/GetExpiringPolicies", authenticateMiddleware, (req, res) => {
+    PolicyController.getExpiringPolicies(req, res, db);
+  });
+
   return router; // Return the router to allow usage by the main app
 };
 
