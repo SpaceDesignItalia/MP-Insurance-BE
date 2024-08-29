@@ -55,6 +55,21 @@ class CustomerController {
       res.status(500).send("Creazione del cliente fallito");
     }
   }
+
+  static async updateCustomerData(req, res, db) {
+    try {
+      const CustomerData = req.body.customerData;
+
+      await Customer.updateCustomerData(db, CustomerData);
+
+      res.status(200).json({
+        message: "Dati del cliente aggiornato con successo",
+      });
+    } catch (error) {
+      console.error("Errore nella creazione del cliente:", error);
+      res.status(500).send("Creazione del cliente fallito");
+    }
+  }
 }
 
 module.exports = CustomerController;

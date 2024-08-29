@@ -5,11 +5,11 @@ class VehicleModel {
       LEFT JOIN public."policy" USING("vehicleId")
       LEFT JOIN public."insuranceCompany" USING("companyId")
       WHERE vehicle."clientId" = $1`;
-      db.query(query, [clientId], (error, result) => {
+      db.query(query, [clientId], (error, results) => {
         if (error) {
           reject(error);
         } else {
-          resolve(result.rows);
+          resolve(results.rows);
         }
       });
     });
@@ -23,12 +23,35 @@ class VehicleModel {
       WHERE v."clientId" = $1
       AND p."vehicleId" IS NULL;`;
 
-      db.query(query, [clientId], (error, result) => {
+      db.query(query, [clientId], (error, results) => {
         if (error) {
           reject(error);
         } else {
-          resolve(result.rows);
+          resolve(results.rows);
         }
+      });
+    });
+  }
+
+  static addNewVehicle(db, clientId, vehicleData) {
+    return new Promise((resolve, reject) => {
+      const query = `INSERT INTO public.vehicle(
+      "licensePlate", brand, model, "typeId", "clientId")
+      VALUES ($1, $2, $3, $4, $5);`;
+
+      const values = [
+        vehicleData.licensePlate,
+        vehicleData.brand,
+        vehicleData.model,
+        vehicleData.veichleTypeId,
+        clientId,
+      ];
+
+      db.query(query, values, (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(results);
       });
     });
   }

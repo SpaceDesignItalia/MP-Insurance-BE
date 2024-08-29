@@ -93,6 +93,29 @@ class StafferModel {
       });
     });
   }
+
+  static updateCustomerData(db, CustomerData) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public.client SET "firstName" = $1, "lastName" = $2, "phoneNumber" = $3, "email" = $4
+      WHERE "clientId" = $5`;
+
+      const values = [
+        CustomerData.firstName,
+        CustomerData.lastName,
+        CustomerData.phoneNumber,
+        CustomerData.email,
+        CustomerData.clientId,
+      ];
+
+      db.query(query, values, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
 }
 
 module.exports = StafferModel;
