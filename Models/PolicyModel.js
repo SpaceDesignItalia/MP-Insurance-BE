@@ -97,31 +97,60 @@ class PolicyModel {
     });
   }
 
-  static searchPolicy(db, searchTerms) {
+  static searchPolicy(db, searchFilter) {
     return new Promise((resolve, reject) => {
-      const query = `SELECT p."policyId", CONCAT(c."firstName", ' ', c."lastName") AS "fullName", v."typeId", 
-      it."name" AS "insuranceType", p."duration", p."amount", p."startDate", p."endDate", ps."status",  pps."paymentStatus"
-      FROM public."policy" p INNER JOIN USING("clientId") INNER JOIN public."vehicle" v USING("vehicleId")
-      INNER JOIN public."policyStatus" ps USING("statusId") INNER JOIN public."policyPaymentStatus" pps USING("paymentStatusId")
-      INNER JOIN public."policyTypes" pt USING("policyId") INNER JOIN public."insuranceType" it USING("insuranceTypeId")
-      WHERE (CONCAT(c."firstName", ' ', c."lastName") ILIKE '%${searchTerms.searchQuery}%') 
-      OR (v."licensePlate" ILIKE '%${searchTerms.searchQuery}%')
-      AND (v."typeId" = $1 OR null IS NULL)
-      AND (it."insuranceTypeId" = $2 OR null IS NULL) 
-      AND (p."duration" = $3 OR null IS NULL)
-      AND (ps."status" = $4 OR null IS NULL) 
-      AND (pps."paymentStatus" = $5 OR null IS NULL);`;
+      let query = `
+        SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
+        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus"
+        FROM public."policy" 
+        INNER JOIN public."client" USING("clientId")
+        INNER JOIN public."vehicle" USING("vehicleId")
+        INNER JOIN public."policyStatus" USING("statusId")
+        INNER JOIN public."policyPaymentStatus" USING("paymentStatusId")
+        INNER JOIN public."insuranceCompany" USING("companyId")
+        WHERE 1=1
+      `;
 
-      const values = [
-        searchTerms.typeId,
-        searchTerms.insuranceTypeIds,
-        searchTerms.duration,
-        searchTerms.status,
-        searchTerms.paymentStatus,
-      ];
-      db.query(query, values, (error, results) => {
+      console.log("hello");
+
+      if (searchFilter.searchTerms !== "") {
+        query += ` WHERE CONCAT("firstName", ' ', "lastName") ILIKE '%${searchFilter.searchTerms}%' OR "licensePlate" ILIKE '%${searchFilter.searchTerms}%'`;
+      }
+
+      if (
+        searchFilter.vehicleTypeId !== "" &&
+        searchFilter.vehicleTypeId !== "0"
+      ) {
+        query += ` AND "typeId" = ${searchFilter.vehicleTypeId}`;
+      }
+
+      if (
+        searchFilter.policyTypeId !== "" &&
+        searchFilter.policyTypeId !== "0"
+      ) {
+        query += ` AND "policyId" IN (SELECT "policyId" FROM public."policyTypes" WHERE "insuranceTypeId" = ${searchFilter.policyTypeId})`;
+      }
+
+      if (searchFilter.duration !== "" && searchFilter.duration !== "0") {
+        query += ` AND "duration" = ${searchFilter.duration}`;
+      }
+
+      if (searchFilter.state !== "" && searchFilter.state !== "0") {
+        query += ` AND "statusId" = ${searchFilter.state}`;
+      }
+
+      if (
+        searchFilter.paymentStatus !== "" &&
+        searchFilter.paymentStatus !== "0"
+      ) {
+        query += ` AND "paymentStatusId" = ${searchFilter.paymentStatus}`;
+      }
+      console.log("hello");
+      console.log(query);
+
+      db.query(query, (error, results) => {
         if (error) {
-          reject(error);
+          return reject(error);
         }
 
         const policies = results.rows;
@@ -232,6 +261,38 @@ class PolicyModel {
       db.query(query, (error, results) => {
         if (error) {
           console.log(error);
+          return reject(error);
+        }
+
+        resolve(results.rows);
+      });
+    });
+  }
+
+  static getActivePolicies(db) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public.policy
+      INNER JOIN public."policyStatus" USING("statusId")
+      WHERE "status" = 'Attiva'`;
+
+      db.query(query, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(results.rows);
+      });
+    });
+  }
+
+  static getExpiringPolicies(db) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public.policy
+      INNER JOIN public."policyStatus" USING("statusId")
+      WHERE "status" = 'In Scadenza'`;
+
+      db.query(query, (error, results) => {
+        if (error) {
           return reject(error);
         }
 
