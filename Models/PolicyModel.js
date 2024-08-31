@@ -296,6 +296,38 @@ class PolicyModel {
       });
     });
   }
+
+  static checkExpiringPolices(db) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public."policy"
+      SET "statusId" = 2
+      WHERE "endDate" = current_date + interval '356 days'`;
+
+      db.query(query, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(results.rows);
+      });
+    });
+  }
+
+  static checkExpiredPolices(db) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public."policy"
+      SET "statusId" = 3
+      WHERE "endDate" = current_date`;
+
+      db.query(query, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(results.rows);
+      });
+    });
+  }
 }
 
 module.exports = PolicyModel;
