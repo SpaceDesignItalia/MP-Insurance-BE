@@ -55,6 +55,19 @@ class VehicleModel {
       });
     });
   }
+
+  static getAllVehicles(db) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public."vehicle"`;
+      db.query(query, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results.rows);
+        }
+      });
+    });
+  }
 }
 
 module.exports = VehicleModel;

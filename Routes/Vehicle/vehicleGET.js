@@ -7,6 +7,10 @@ const authenticateMiddleware = require("../../middlewares/Authentication/Authmid
 const vehicleGET = (db) => {
   // Define your routes here
 
+  router.get("/GetAllVehicles", authenticateMiddleware, (req, res) => {
+    VehicleController.getAllVehicles(req, res, db);
+  });
+
   router.get("/GetClientVehicles", authenticateMiddleware, (req, res) => {
     VehicleController.GetClientVehicles(req, res, db);
   });
