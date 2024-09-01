@@ -116,6 +116,20 @@ class StafferModel {
       });
     });
   }
+
+  static deleteCustomer(db, clientId) {
+    return new Promise((resolve, reject) => {
+      const query = `DELETE FROM public.client WHERE "clientId" = $1`;
+
+      db.query(query, [clientId], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
 }
 
 module.exports = StafferModel;

@@ -70,6 +70,21 @@ class CustomerController {
       res.status(500).send("Creazione del cliente fallito");
     }
   }
+
+  static async deleteCustomer(req, res, db) {
+    try {
+      const customerId = req.query.clientId;
+
+      await Customer.deleteCustomer(db, customerId);
+
+      res.status(200).json({
+        message: "Cliente eliminato con successo",
+      });
+    } catch (error) {
+      console.error("Errore nell'eliminazione del cliente:", error);
+      res.status(500).send("Eliminazione del cliente fallito");
+    }
+  }
 }
 
 module.exports = CustomerController;
