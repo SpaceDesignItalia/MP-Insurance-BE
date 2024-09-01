@@ -328,6 +328,20 @@ class PolicyModel {
       });
     });
   }
+
+  static deletePolicy(db, policyId) {
+    return new Promise((resolve, reject) => {
+      const query = `DELETE FROM public."policy" WHERE "policyId" = $1`;
+
+      db.query(query, [policyId], (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(results.rows);
+      });
+    });
+  }
 }
 
 module.exports = PolicyModel;

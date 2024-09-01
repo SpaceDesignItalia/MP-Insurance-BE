@@ -87,6 +87,16 @@ class PolicyController {
       console.log(error);
     }
   }
+
+  static async deletePolicy(req, res, db) {
+    try {
+      const policyId = req.query.policyId;
+      const policy = await Policy.deletePolicy(db, policyId);
+      res.status(200).json(policy);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = PolicyController;
