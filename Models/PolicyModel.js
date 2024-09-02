@@ -111,8 +111,6 @@ class PolicyModel {
         WHERE 1=1
       `;
 
-      console.log("hello");
-
       if (searchFilter.searchTerms !== "") {
         query += ` WHERE CONCAT("firstName", ' ', "lastName") ILIKE '%${searchFilter.searchTerms}%' OR "licensePlate" ILIKE '%${searchFilter.searchTerms}%'`;
       }
@@ -145,8 +143,6 @@ class PolicyModel {
       ) {
         query += ` AND "paymentStatusId" = ${searchFilter.paymentStatus}`;
       }
-      console.log("hello");
-      console.log(query);
 
       db.query(query, (error, results) => {
         if (error) {

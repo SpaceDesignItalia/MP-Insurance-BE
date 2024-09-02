@@ -18,6 +18,10 @@ const vehicleGET = (db) => {
       VehicleController.GetClientVehiclesUninsured(req, res, db);
     }
   );
+
+  router.get("/GetAllVehicles", authenticateMiddleware, (req, res) => {
+    VehicleController.getAllVehicles(req, res, db);
+  });
   return router; // Return the router to allow usage by the main app
 };
 
