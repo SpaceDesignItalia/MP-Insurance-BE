@@ -301,7 +301,9 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       const query = `UPDATE public."policy"
       SET "statusId" = 2
-      WHERE "endDate" = current_date + interval '356 days'`;
+      WHERE "endDate" BETWEEN current_date + interval '1 day' 
+      AND current_date + interval '10 days'
+		  AND "statusId" = 1`;
 
       db.query(query, (error, results) => {
         if (error) {
