@@ -319,7 +319,7 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       const query = `UPDATE public."policy"
       SET "statusId" = 3
-      WHERE "endDate" = current_date`;
+      WHERE "endDate" <= current_date`;
 
       db.query(query, (error, results) => {
         if (error) {
