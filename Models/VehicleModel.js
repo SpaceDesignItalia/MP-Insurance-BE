@@ -59,11 +59,59 @@ class VehicleModel {
   static getAllVehicles(db) {
     return new Promise((resolve, reject) => {
       const query = `SELECT * FROM public."vehicle"`;
-      db.query(query, (error, results) => {
+      db.query(query, (error, result) => {
         if (error) {
           reject(error);
         } else {
-          resolve(results.rows);
+          resolve(result.rows);
+        }
+      });
+    });
+  }
+
+  static getVehicleById(db, vehicleId) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public."vehicle" WHERE "vehicleId" = $1`;
+
+      db.query(query, [vehicleId], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.rows[0]);
+        }
+      });
+    });
+  }
+
+  static updateVehicleData(db, vehicleData) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public."vehicle" SET
+      "licensePlate" = $1, brand = $2, model = $3
+      WHERE "vehicleId" = $4`;
+      const values = [
+        vehicleData.licensePlate,
+        vehicleData.brand,
+        vehicleData.model,
+        vehicleData.vehicleId,
+      ];
+      db.query(query, values, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  }
+
+  static deleteVehicle(db, vehicleId) {
+    return new Promise((resolve, reject) => {
+      const query = `DELETE FROM public."vehicle" WHERE "vehicleId" = $1`;
+      db.query(query, [vehicleId], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
         }
       });
     });

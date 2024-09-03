@@ -47,13 +47,36 @@ class VehicleController {
     }
   }
 
-  static async getAllVehicles(req, res, db) {
+  static async getVehicleById(req, res, db) {
     try {
-      const vehicles = await Vehicle.getAllVehicles(db);
-      res.status(200).json(vehicles);
+      const vehicleId = req.query.vehicleId;
+      const vehicle = await Vehicle.getVehicleById(db, vehicleId);
+      res.status(200).json(vehicle);
     } catch (error) {
-      console.error("Error while retrieving vehicles:", error);
-      res.status(500).send("Failed to retrieve vehicles");
+      console.error("Error while retrieving vehicle:", error);
+      res.status(500).send("Failed to retrieve vehicle");
+    }
+  }
+
+  static async updateVehicleData(req, res, db) {
+    try {
+      const vehicleData = req.body.vehicleData;
+      await Vehicle.updateVehicleData(db, vehicleData);
+      res.status(200).json({ message: "Veicolo aggiornato con successo" });
+    } catch (error) {
+      console.error("Errore durante l'aggiornamento del veicolo:", error);
+      res.status(500).send("Aggiornamento del veicolo fallito");
+    }
+  }
+
+  static async deleteVehicle(req, res, db) {
+    try {
+      const vehicleId = req.query.selectedVehicleId;
+      await Vehicle.deleteVehicle(db, vehicleId);
+      res.status(200).send("Veicolo cancellato con successo");
+    } catch (error) {
+      console.error("Errore nella cancellazione del vehicolo:", error);
+      res.status(500).send("Eliminazione del veicolo fallito");
     }
   }
 }
