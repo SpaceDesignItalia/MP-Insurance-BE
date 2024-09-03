@@ -68,6 +68,33 @@ class VehicleModel {
       });
     });
   }
+
+  static getVehicleById(db, vehicleId) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM public."vehicle" WHERE "vehicleId" = $1`;
+
+      db.query(query, [vehicleId], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.rows[0]);
+        }
+      });
+    });
+  }
+
+  static deleteVehicle(db, vehicleId) {
+    return new Promise((resolve, reject) => {
+      const query = `DELETE FROM public."vehicle" WHERE "vehicleId" = $1`;
+      db.query(query, [vehicleId], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  }
 }
 
 module.exports = VehicleModel;

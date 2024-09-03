@@ -22,6 +22,10 @@ const vehicleGET = (db) => {
   router.get("/GetAllVehicles", authenticateMiddleware, (req, res) => {
     VehicleController.getAllVehicles(req, res, db);
   });
+
+  router.get("/GetVehicleById", authenticateMiddleware, (req, res) => {
+    VehicleController.getVehicleById(req, res, db);
+  });
   return router; // Return the router to allow usage by the main app
 };
 
