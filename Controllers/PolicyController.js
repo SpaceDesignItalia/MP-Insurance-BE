@@ -36,6 +36,7 @@ class PolicyController {
       const policyData = req.body.policyData;
 
       const policy = await Policy.AddPolicy(db, policyData);
+
       res.status(200).json(policy);
     } catch (error) {
       res.status(500).json({ error: error.message });

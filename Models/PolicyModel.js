@@ -234,33 +234,46 @@ class PolicyModel {
 
   static GetCalendarExpiration(db) {
     return new Promise((resolve, reject) => {
-      let query = `
-            SELECT 
-              public."policy"."policyId",
-              "endDate",
-              "firstName",
-              "lastName",
-              "phoneNumber",
-              "email",
-              "licensePlate",
-              "brand",
-              "model",
-              "amount",
-              "companyName"
-            FROM public."policy"
-            INNER JOIN public."client" ON public."policy"."clientId" = public."client"."clientId"
-            INNER JOIN public."vehicle" ON public."policy"."vehicleId" = public."vehicle"."vehicleId"
-            INNER JOIN public."insuranceCompany" ON public."policy"."companyId" = public."insuranceCompany"."companyId"
-            
-          `;
+      const query = `
+        SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
+        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus"
+        FROM public."policy" 
+        INNER JOIN public."client" USING("clientId")
+        INNER JOIN public."vehicle" USING("vehicleId")
+        INNER JOIN public."policyStatus" USING("statusId")
+        INNER JOIN public."policyPaymentStatus" USING("paymentStatusId")
+        INNER JOIN public."insuranceCompany" USING("companyId")
+      `;
 
       db.query(query, (error, results) => {
         if (error) {
-          console.log(error);
           return reject(error);
         }
 
-        resolve(results.rows);
+        const policies = results.rows;
+        const policyPromises = policies.map((policy) => {
+          return new Promise((resolve, reject) => {
+            const query = `
+              SELECT "policyId", "name" 
+              FROM public."policyTypes"
+              INNER JOIN public."insuranceType" USING("insuranceTypeId")
+              WHERE "policyId" = $1
+            `;
+            db.query(query, [policy.policyId], (error, results) => {
+              if (error) {
+                return reject(error);
+              }
+              // Add the list of types to the policy
+              policy.types = results.rows.map((row) => row.name);
+              resolve(policy);
+            });
+          });
+        });
+
+        // Wait for all policyPromises to resolve
+        Promise.all(policyPromises)
+          .then((policiesWithTypes) => resolve(policiesWithTypes))
+          .catch((error) => reject(error));
       });
     });
   }

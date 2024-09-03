@@ -9,8 +9,7 @@ const policyPOST = (db) => {
   // Define your routes here
 
   router.post("/AddPolicy", authenticateMiddleware, (req, res) => {
-    PolicyController.AddPolicy(req, res, db);
-    checkPolices();
+    PolicyController.AddPolicy(req, res, db).then(() => checkPolices());
   });
 
   function checkPolices() {
@@ -18,7 +17,7 @@ const policyPOST = (db) => {
     PolicyController.checkExpiredPolices(db);
   }
 
-  cron.schedule("31 14 * * *", checkPolices, {
+  cron.schedule("1 0 * * *", checkPolices, {
     timezone: "Europe/Rome",
   });
 
