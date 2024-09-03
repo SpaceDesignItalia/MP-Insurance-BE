@@ -58,6 +58,17 @@ class VehicleController {
     }
   }
 
+  static async updateVehicleData(req, res, db) {
+    try {
+      const vehicleData = req.body.vehicleData;
+      await Vehicle.updateVehicleData(db, vehicleData);
+      res.status(200).json({ message: "Veicolo aggiornato con successo" });
+    } catch (error) {
+      console.error("Errore durante l'aggiornamento del veicolo:", error);
+      res.status(500).send("Aggiornamento del veicolo fallito");
+    }
+  }
+
   static async deleteVehicle(req, res, db) {
     try {
       const vehicleId = req.query.selectedVehicleId;

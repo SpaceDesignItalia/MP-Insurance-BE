@@ -83,6 +83,27 @@ class VehicleModel {
     });
   }
 
+  static updateVehicleData(db, vehicleData) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public."vehicle" SET
+      "licensePlate" = $1, brand = $2, model = $3
+      WHERE "vehicleId" = $4`;
+      const values = [
+        vehicleData.licensePlate,
+        vehicleData.brand,
+        vehicleData.model,
+        vehicleData.vehicleId,
+      ];
+      db.query(query, values, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  }
+
   static deleteVehicle(db, vehicleId) {
     return new Promise((resolve, reject) => {
       const query = `DELETE FROM public."vehicle" WHERE "vehicleId" = $1`;
