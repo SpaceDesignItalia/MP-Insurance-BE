@@ -344,6 +344,23 @@ class PolicyModel {
     });
   }
 
+  static changePolicyPaymentStatus(db, policyId, paymentStatusId) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public."policy"
+      SET "paymentStatusId" = $1
+      WHERE "policyId" = $2`;
+
+      const values = [paymentStatusId, policyId];
+
+      db.query(query, values, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results.rows);
+      });
+    });
+  }
+
   static deletePolicy(db, policyId) {
     return new Promise((resolve, reject) => {
       const query = `DELETE FROM public."policy" WHERE "policyId" = $1`;

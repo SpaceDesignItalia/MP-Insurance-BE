@@ -74,7 +74,6 @@ class PolicyController {
   static async checkExpiringPolices(db) {
     try {
       const policies = await Policy.checkExpiringPolices(db);
-      console.log(policies);
     } catch (error) {
       console.log(error);
     }
@@ -83,7 +82,20 @@ class PolicyController {
   static async checkExpiredPolices(db) {
     try {
       const policies = await Policy.checkExpiredPolices(db);
-      console.log(policies);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  static async changePolicyPaymentStatus(req, res, db) {
+    try {
+      const policyId = req.body.policyId;
+      const paymentStatusId = req.body.paymentStatusId;
+
+      await Policy.changePolicyPaymentStatus(db, policyId, paymentStatusId);
+      res
+        .status(200)
+        .send("Stato di pagamento della polizza modificato con successo");
     } catch (error) {
       console.log(error);
     }
