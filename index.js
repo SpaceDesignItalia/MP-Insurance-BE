@@ -4,6 +4,10 @@ const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const http = require("http");
+const axios = require("axios");
+require("dotenv").config();
+const FormData = require("form-data");
+const fs = require("fs");
 
 //Main Routes declaration
 const createAuthenticationRoutes = require("./Routes/Authentication/Authentication");

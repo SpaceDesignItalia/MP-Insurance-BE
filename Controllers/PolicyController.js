@@ -110,6 +110,14 @@ class PolicyController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  static async sendMessages(db) {
+    try {
+      const policies = await Policy.sendMessages(db);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 module.exports = PolicyController;

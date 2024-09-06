@@ -1,3 +1,5 @@
+const Messages = require("../middlewares/WhatsappBusiness/Messages");
+
 class PolicyModel {
   static async getAllPolicies(db) {
     return new Promise((resolve, reject) => {
@@ -371,6 +373,31 @@ class PolicyModel {
         }
 
         resolve(results.rows);
+      });
+    });
+  }
+
+  static async sendMessages(db) {
+    const query = `SELECT * FROM public."policy" 
+    INNER JOIN public."vehicle" USING("vehicleId")
+    INNER JOIN public."client" ON public."policy"."clientId" = public."client"."clientId"
+    WHERE "statusId" = 2 
+    AND current_date + interval '3 days' = "endDate"`;
+    db.query(query, (error, results) => {
+      if (error) {
+        console.log(error);
+      }
+
+      const policies = results.rows;
+      console.log(policies);
+      policies.forEach(async (policy) => {
+        await Messages.sendMessage(
+          policy.phoneNumber,
+          policy.endDate,
+          policy.brand,
+          policy.model,
+          policy.licensePlate
+        );
       });
     });
   }
