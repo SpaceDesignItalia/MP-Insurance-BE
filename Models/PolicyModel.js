@@ -5,7 +5,7 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
-        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus"
+        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus", "note"
         FROM public."policy" 
         INNER JOIN public."client" USING("clientId")
         INNER JOIN public."vehicle" USING("vehicleId")
@@ -51,7 +51,7 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
-        "amount", "startDate", "endDate","brand", "model", "licensePlate", "status", "paymentStatus", "companyName", "companyLogo"
+        "amount", "startDate", "endDate","brand", "model", "licensePlate", "status", "paymentStatus", "companyName", "companyLogo", "note"
         FROM public."policy" 
         INNER JOIN public."client" USING("clientId")
         INNER JOIN public."vehicle" USING("vehicleId")
@@ -103,7 +103,7 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       let query = `
         SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
-        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus"
+        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus", "note"
         FROM public."policy" 
         INNER JOIN public."client" USING("clientId")
         INNER JOIN public."vehicle" USING("vehicleId")
@@ -182,7 +182,7 @@ class PolicyModel {
   static AddPolicy(db, policyData) {
     return new Promise((resolve, reject) => {
       const query = `INSERT INTO public."policy" ("vehicleId", "companyId", "startDate", "endDate", 
-      "duration", "amount", "clientId") VALUES ($1, $2, $3, $4, $5, $6, $7) 
+      "duration", "amount", "clientId", "note") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
       RETURNING "policyId"`;
 
       db.query(
@@ -195,6 +195,7 @@ class PolicyModel {
           policyData.duration,
           policyData.amount,
           policyData.clientId,
+          policyData.note,
         ],
         (error, results) => {
           if (error) {
@@ -398,6 +399,23 @@ class PolicyModel {
           policy.model,
           policy.licensePlate
         );
+      });
+    });
+  }
+
+  static async updateNote(db, policyId, note) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public."policy"
+      SET "note" = $1
+      WHERE "policyId" = $2`;
+
+      const values = [note, policyId];
+
+      db.query(query, values, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results.rows);
       });
     });
   }

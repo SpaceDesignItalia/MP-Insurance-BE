@@ -16,6 +16,10 @@ const policyUPDATE = (db) => {
     }
   );
 
+  router.put("/UpdateNote", authenticateMiddleware, (req, res) => {
+    PolicyController.updateNote(req, res, db);
+  });
+
   return router; // Return the router to allow usage by the main app
 };
 

@@ -118,6 +118,18 @@ class PolicyController {
       console.log(error);
     }
   }
+
+  static async updateNote(req, res, db) {
+    try {
+      const policyId = req.body.policyId;
+      const note = req.body.note;
+
+      await Policy.updateNote(db, policyId, note);
+      res.status(200).send("Nota aggiornata con successo");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 module.exports = PolicyController;
