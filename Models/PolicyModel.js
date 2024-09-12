@@ -89,7 +89,6 @@ class PolicyModel {
         policyPromise
           .then((policyWithTypes) => {
             // Fai qualcosa con la `policy` che ora include i `types`
-            console.log(policyWithTypes);
             resolve(policyWithTypes);
           })
           .catch((error) => {
@@ -331,11 +330,44 @@ class PolicyModel {
     });
   }
 
+  static checkSixMonthsExpiringPolices(db) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public."policy"
+      SET "statusId" = 4
+      WHERE "duration" = 6
+      AND "endDate" - interval '6 months' BETWEEN current_date + interval '1 day' 
+      AND current_date + interval '10 day'`;
+      db.query(query, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results.rows);
+      });
+    });
+  }
+
   static checkExpiredPolices(db) {
     return new Promise((resolve, reject) => {
       const query = `UPDATE public."policy"
       SET "statusId" = 3
       WHERE "endDate" <= current_date`;
+
+      db.query(query, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(results.rows);
+      });
+    });
+  }
+
+  static async checkSixMonthsExpiredPolices(db) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public."policy"
+      SET "statusId" = 5
+      WHERE "duration" = 6
+      AND "endDate" - interval '6 months' <= current_date`;
 
       db.query(query, (error, results) => {
         if (error) {
@@ -390,7 +422,6 @@ class PolicyModel {
       }
 
       const policies = results.rows;
-      console.log(policies);
       policies.forEach(async (policy) => {
         await Messages.sendMessage(
           policy.phoneNumber,
@@ -412,6 +443,22 @@ class PolicyModel {
       const values = [note, policyId];
 
       db.query(query, values, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results.rows);
+      });
+    });
+  }
+
+  static async renewSixPolicy(db, policyId) {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE public."policy"
+      SET "statusId" = 1, "duration" = 12
+      WHERE "policyId" = $1
+      AND "statusId" = 5`;
+
+      db.query(query, [policyId], (error, results) => {
         if (error) {
           return reject(error);
         }

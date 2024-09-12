@@ -18,11 +18,10 @@ const policyPOST = (db) => {
   }
 
   function sendMessages() {
-    console.log("Sending messages123");
     PolicyController.sendMessages(db);
   }
 
-  cron.schedule("1 0 * * *", checkPolices, {
+  cron.schedule("27 11 * * *", checkPolices, {
     timezone: "Europe/Rome",
   });
 
