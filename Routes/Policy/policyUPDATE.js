@@ -20,6 +20,9 @@ const policyUPDATE = (db) => {
     PolicyController.updateNote(req, res, db);
   });
 
+  router.put("/RenewSixPolicy", (req, res) => {
+    PolicyController.renewSixPolicy(req, res, db);
+  });
   return router; // Return the router to allow usage by the main app
 };
 

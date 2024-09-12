@@ -46,7 +46,6 @@ class PolicyController {
   static async GetCalendarExpiration(req, res, db) {
     try {
       const policy = await Policy.GetCalendarExpiration(db);
-      console.log(policy);
       res.status(200).json(policy);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -73,7 +72,8 @@ class PolicyController {
 
   static async checkExpiringPolices(db) {
     try {
-      const policies = await Policy.checkExpiringPolices(db);
+      await Policy.checkExpiringPolices(db);
+      await Policy.checkSixMonthsExpiringPolices(db);
     } catch (error) {
       console.log(error);
     }
@@ -81,7 +81,8 @@ class PolicyController {
 
   static async checkExpiredPolices(db) {
     try {
-      const policies = await Policy.checkExpiredPolices(db);
+      await Policy.checkExpiredPolices(db);
+      await Policy.checkSixMonthsExpiredPolices(db);
     } catch (error) {
       console.log(error);
     }
@@ -126,6 +127,16 @@ class PolicyController {
 
       await Policy.updateNote(db, policyId, note);
       res.status(200).send("Nota aggiornata con successo");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  static async renewSixPolicy(req, res, db) {
+    try {
+      const policyId = req.body.params.policyId;
+      await Policy.renewSixPolicy(db, policyId);
+      res.status(200).send("Polizza rinnovata con successo");
     } catch (error) {
       console.log(error);
     }
