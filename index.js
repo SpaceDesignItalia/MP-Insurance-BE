@@ -15,6 +15,7 @@ const createCustomerRoutes = require("./Routes/Customer/Customer");
 const createVehicleRoutes = require("./Routes/Vehicle/Vehicle");
 const createCompanyRoutes = require("./Routes/Company/Company");
 const createPolicyRoutes = require("./Routes/Policy/Policy");
+const createFileGeneratorRoutes = require("./Routes/FileGenerator/FileGenerator");
 
 const app = express();
 app.use(express.static("public"));
@@ -51,6 +52,7 @@ app.use(PREFIX + "/Vehicle", createVehicleRoutes(db));
 app.use(PREFIX + "/Company", createCompanyRoutes(db));
 app.use(PREFIX + "/Policy", createPolicyRoutes(db));
 app.use(PREFIX + "/Customer", createCustomerRoutes(db));
+app.use(PREFIX + "/FileGenerator", createFileGeneratorRoutes(db));
 
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
