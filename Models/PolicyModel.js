@@ -239,7 +239,7 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
-        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus"
+        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus", "note"
         FROM public."policy" 
         INNER JOIN public."client" USING("clientId")
         INNER JOIN public."vehicle" USING("vehicleId")
