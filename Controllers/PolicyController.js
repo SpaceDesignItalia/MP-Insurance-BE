@@ -120,6 +120,25 @@ class PolicyController {
     }
   }
 
+  static async suspendPolicy(req, res, db) {
+    try {
+      const policyId = req.body.policyId;
+      await Policy.suspendPolicy(db, policyId);
+      res.status(200).send("Polizza sospesa con successo");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  static async reactivatePolicy(req, res, db) {
+    try {
+      const policyId = req.body.policyId;
+      await Policy.reactivatePolicy(db, policyId);
+      res.status(200).send("Polizza sospesa con successo");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   static async updateNote(req, res, db) {
     try {
       const policyId = req.body.policyId;

@@ -12,6 +12,14 @@ const policyPOST = (db) => {
     PolicyController.AddPolicy(req, res, db).then(() => checkPolices());
   });
 
+  router.post("/SuspendPolicy", authenticateMiddleware, (req, res) => {
+    PolicyController.suspendPolicy(req, res, db);
+  });
+
+  router.post("/ReactivatePolicy", authenticateMiddleware, (req, res) => {
+    PolicyController.reactivatePolicy(req, res, db);
+  });
+
   function checkPolices() {
     PolicyController.checkExpiringPolices(db);
     PolicyController.checkExpiredPolices(db);
