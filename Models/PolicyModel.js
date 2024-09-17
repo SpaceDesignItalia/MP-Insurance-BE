@@ -486,111 +486,104 @@ class PolicyModel {
           FROM public."suspendedPolicy" 
           WHERE "policyId" = $1
         `;
-      const suspensionResult = await db.query(
-        selectSuspensionQuery,
-        [policyId],
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            const suspensionDate = result.rows[0].startSuspensionDate;
+      db.query(selectSuspensionQuery, [policyId], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          const suspensionDate = result.rows[0].startSuspensionDate;
 
-            // Verifica se suspensionDate è valido
-            const suspensionStartDate = new Date(suspensionDate);
-            if (isNaN(suspensionStartDate.getTime())) {
-              return reject(new Error("Invalid suspension date format"));
-            }
+          // Verifica se suspensionDate è valido
+          const suspensionStartDate = new Date(suspensionDate);
+          if (isNaN(suspensionStartDate.getTime())) {
+            return reject(new Error("Invalid suspension date format"));
+          }
 
-            // Step 2: Recupera le informazioni della polizza (inclusa la data di fine)
-            const selectPolicyQuery = `SELECT "endDate" FROM public."policy" WHERE "policyId" = $1`;
-            db.query(selectPolicyQuery, [policyId], (error, result) => {
-              if (error) {
-                reject(error);
-              } else {
-                if (result.rows.length === 0) {
-                  return reject(new Error("Policy not found"));
-                }
+          // Step 2: Recupera le informazioni della polizza (inclusa la data di fine)
+          const selectPolicyQuery = `SELECT "endDate" FROM public."policy" WHERE "policyId" = $1`;
+          db.query(selectPolicyQuery, [policyId], (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              if (result.rows.length === 0) {
+                return reject(new Error("Policy not found"));
+              }
 
-                const endDate = result.rows[0].endDate;
-                console.log("Original End Date: ", endDate);
+              const endDate = result.rows[0].endDate;
 
-                // Step 3: Calcola l'intervallo di sospensione in giorni usando JavaScript
-                const currentDate = new Date(); // Data corrente
+              // Step 3: Calcola l'intervallo di sospensione in giorni usando JavaScript
+              const currentDate = new Date(); // Data corrente
 
-                // Calcola la differenza in millisecondi
-                const differenceInMs = currentDate - suspensionStartDate;
+              // Calcola la differenza in millisecondi
+              const differenceInMs = currentDate - suspensionStartDate;
 
-                // Verifica che la differenza non sia negativa (data futura)
-                if (differenceInMs < 0) {
-                  return reject(new Error("Suspension date is in the future"));
-                }
+              // Verifica che la differenza non sia negativa (data futura)
+              if (differenceInMs < 0) {
+                return reject(new Error("Suspension date is in the future"));
+              }
 
-                // Converti la differenza in giorni usando Math.ceil per includere anche porzioni di giorni
-                const suspensionDays = Math.ceil(
-                  differenceInMs / (1000 * 60 * 60 * 24)
-                );
+              // Converti la differenza in giorni usando Math.ceil per includere anche porzioni di giorni
+              const suspensionDays = Math.ceil(
+                differenceInMs / (1000 * 60 * 60 * 24)
+              );
 
-                // Verifica se suspensionDays è valido
-                if (suspensionDays <= 0 || isNaN(suspensionDays)) {
-                  return reject(new Error("Invalid suspension interval"));
-                }
+              // Verifica se suspensionDays è valido
+              if (suspensionDays <= 0 || isNaN(suspensionDays)) {
+                return reject(new Error("Invalid suspension interval"));
+              }
 
-                // Step 4: Calcola la nuova data di fine della polizza
-                const endDateObj = new Date(endDate);
-                const newEndDateMilliseconds =
-                  endDateObj.getTime() + suspensionDays * 24 * 60 * 60 * 1000; // Aggiungi i giorni di sospensione in millisecondi
-                const newEndDate = new Date(newEndDateMilliseconds);
+              // Step 4: Calcola la nuova data di fine della polizza
+              const endDateObj = new Date(endDate);
+              const newEndDateMilliseconds =
+                endDateObj.getTime() + suspensionDays * 24 * 60 * 60 * 1000; // Aggiungi i giorni di sospensione in millisecondi
+              const newEndDate = new Date(newEndDateMilliseconds);
 
-                // Step 5: Aggiorna la data di fine della polizza nel database
-                const updateEndDateQuery = `UPDATE public."policy" SET "endDate" = $1, "statusId" = 1 WHERE "policyId" = $2`;
-                db.query(
-                  updateEndDateQuery,
-                  [
-                    newEndDate.toISOString(), // Converti la data nel formato ISO 8601 per il database
-                    policyId,
-                  ],
-                  (error, result) => {
-                    if (error) {
-                      reject(error);
-                    } else {
-                      if (result.rowCount === 0) {
-                        return reject(
-                          new Error(
-                            `Failed to update policy with id ${policyId}`
-                          )
-                        );
-                      }
-
-                      // Step 6: Elimina la polizza dalla tabella suspendedPolicy
-                      const deleteSuspendedPolicyQuery = `DELETE FROM public."suspendedPolicy" WHERE "policyId" = $1`;
-                      db.query(
-                        deleteSuspendedPolicyQuery,
-                        [policyId],
-                        (error, result) => {
-                          if (error) {
-                            reject(error);
-                          } else {
-                            if (result.rowCount === 0) {
-                              return reject(
-                                new Error(
-                                  `Failed to delete suspended policy with id ${policyId}`
-                                )
-                              );
-                            }
-
-                            // Risolvi la Promise se tutto va bene
-                            resolve(result.rowCount);
-                          }
-                        }
+              // Step 5: Aggiorna la data di fine della polizza nel database
+              const updateEndDateQuery = `UPDATE public."policy" SET "endDate" = $1, "statusId" = 1 WHERE "policyId" = $2`;
+              db.query(
+                updateEndDateQuery,
+                [
+                  newEndDate.toISOString(), // Converti la data nel formato ISO 8601 per il database
+                  policyId,
+                ],
+                (error, result) => {
+                  if (error) {
+                    reject(error);
+                  } else {
+                    if (result.rowCount === 0) {
+                      return reject(
+                        new Error(`Failed to update policy with id ${policyId}`)
                       );
                     }
+
+                    // Step 6: Elimina la polizza dalla tabella suspendedPolicy
+                    const deleteSuspendedPolicyQuery = `DELETE FROM public."suspendedPolicy" WHERE "policyId" = $1`;
+                    db.query(
+                      deleteSuspendedPolicyQuery,
+                      [policyId],
+                      (error, result) => {
+                        if (error) {
+                          reject(error);
+                        } else {
+                          if (result.rowCount === 0) {
+                            return reject(
+                              new Error(
+                                `Failed to delete suspended policy with id ${policyId}`
+                              )
+                            );
+                          }
+
+                          // Risolvi la Promise se tutto va bene
+                          resolve(result.rowCount);
+                        }
+                      }
+                    );
                   }
-                );
-              }
-            });
-          }
+                }
+              );
+            }
+          });
         }
-      );
+      });
     });
   }
 
