@@ -21,6 +21,7 @@ const policyPOST = (db) => {
   });
 
   function checkPolices() {
+    console.log("checkPolices");
     PolicyController.checkExpiringPolices(db);
     PolicyController.checkExpiredPolices(db);
   }
@@ -29,7 +30,7 @@ const policyPOST = (db) => {
     PolicyController.sendMessages(db);
   }
 
-  cron.schedule("27 11 * * *", checkPolices, {
+  cron.schedule("56 14 * * *", checkPolices, {
     timezone: "Europe/Rome",
   });
 

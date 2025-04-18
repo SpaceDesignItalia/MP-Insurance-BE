@@ -20,7 +20,7 @@ const createFileGeneratorRoutes = require("./Routes/FileGenerator/FileGenerator"
 const app = express();
 app.use(express.static("public"));
 const PREFIX = "/API/v1";
-const PORT = 3000;
+const PORT = process.env.APP_BASE_PORT;
 
 const db = require("./configs/Database");
 
@@ -34,7 +34,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(
   session({
-    secret: "T^pX#z1$0%V@l2&nHbO8yGcLsAaE!WuPq4Rv7*3Sd9MwYjNfCmKgJiBkD5F",
+    secret: process.env.ENCRYPT_KEY,
     saveUninitialized: false,
     resave: false,
     cookie: {
