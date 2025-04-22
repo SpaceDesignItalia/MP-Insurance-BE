@@ -5,7 +5,7 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
-        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus", "note"
+        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus", "note", client."clientId"
         FROM public."policy" 
         INNER JOIN public."client" USING("clientId")
         INNER JOIN public."vehicle" USING("vehicleId")
@@ -51,7 +51,7 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
-        "amount", "startDate", "endDate","brand", "model", "licensePlate", "status", "paymentStatus", "companyName", "companyLogo", "note", "startSuspensionDate"
+        "amount", "startDate", "endDate","brand", "model", "licensePlate", "status", "paymentStatus", "companyName", "companyLogo", "note", "startSuspensionDate", client."clientId"
         FROM public."policy" 
         INNER JOIN public."client" USING("clientId")
         INNER JOIN public."vehicle" USING("vehicleId")
@@ -103,7 +103,7 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       let query = `
         SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
-        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus", "note"
+        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus", "note", client."clientId"
         FROM public."policy" 
         INNER JOIN public."client" USING("clientId")
         INNER JOIN public."vehicle" USING("vehicleId")
@@ -239,7 +239,7 @@ class PolicyModel {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
-        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus", "note"
+        "amount", "startDate", "endDate", "licensePlate", "status", "paymentStatus", "note", client."clientId"
         FROM public."policy" 
         INNER JOIN public."client" USING("clientId")
         INNER JOIN public."vehicle" USING("vehicleId")

@@ -68,6 +68,61 @@ class AuthenticationController {
       res.status(500).send("Recupero nel recupero della sessione");
     }
   }
+
+  static async requestPasswordReset(req, res, db) {
+    try {
+      const email = req.body.email;
+      const account = await Authentication.requestPasswordReset(db, email);
+      res.status(200).json({ message: "Richiesta di reset password inviata" });
+    } catch (error) {
+      console.error("Errore durante la richiesta di reset password:", error);
+      res
+        .status(500)
+        .json({ message: "Errore durante la richiesta di reset password" });
+    }
+  }
+
+  static async verifyOTP(req, res, db) {
+    try {
+      const email = req.body.email;
+      const otp = req.body.otp;
+      const account = await Authentication.verifyOTP(db, email, otp);
+
+      if (!account) {
+        return res
+          .status(400)
+          .json({ message: "OTP non valido o email non trovata" });
+      }
+
+      res.status(200).json({ message: "OTP verificato con successo" });
+    } catch (error) {
+      console.error("Errore durante la verifica OTP:", error);
+      res.status(500).json({ message: "Errore durante la verifica dell'OTP" });
+    }
+  }
+
+  static async resetPassword(req, res, db) {
+    try {
+      const email = req.body.email;
+      const password = req.body.password;
+      const otp = req.body.otp;
+      console.log("email", email);
+      console.log("password", password);
+      console.log("otp", otp);
+      const account = await Authentication.resetPassword(
+        db,
+        email,
+        password,
+        otp
+      );
+      res.status(200).json({ message: "Password resettata con successo" });
+    } catch (error) {
+      console.error("Errore durante il reset della password:", error);
+      res
+        .status(500)
+        .json({ message: "Errore durante il reset della password" });
+    }
+  }
 }
 
 module.exports = AuthenticationController;

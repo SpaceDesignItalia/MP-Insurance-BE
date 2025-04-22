@@ -9,6 +9,18 @@ const authenticationPOST = (db) => {
     AuthenticationController.login(req, res, db);
   });
 
+  router.post("/RequestPasswordReset", (req, res) => {
+    AuthenticationController.requestPasswordReset(req, res, db);
+  });
+
+  router.post("/VerifyOTP", (req, res) => {
+    AuthenticationController.verifyOTP(req, res, db);
+  });
+
+  router.post("/ResetPassword", (req, res) => {
+    AuthenticationController.resetPassword(req, res, db);
+  });
+
   return router;
 };
 

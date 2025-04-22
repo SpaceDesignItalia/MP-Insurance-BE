@@ -47,27 +47,24 @@ class EmailService {
     });
   }
 
-  static sendStafferRemoval(email, fullname) {
+  static sendOtpCode(email, otpCode) {
     const emailTemplatePath = path.join(
       __dirname,
-      "EmailTemplate/RemovalSafferModel.html"
+      "EmailTemplate/OtpCodeMail.html"
     );
     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
 
-    let htmlContent = emailTemplate.replace("${fullname}", fullname);
+    let htmlContent = emailTemplate.replace("${otpCode}", otpCode);
 
-    const sendStafferRemovalMail = {
+    const mailOptions = {
       from: `Space Design Italia <${mailData.mail}>`,
       to: email,
-      subject: "Collaborazione con Space Design Italia terminata",
-      text:
-        "Caro/a " +
-        fullname +
-        ",\n\nVogliamo informarti che la tua collaborazione con Space Design Italia è terminata. Ti ringraziamo sinceramente per il tuo contributo e ti auguriamo il meglio per il futuro.",
+      subject: "Codice OTP per Cambio Password",
+      text: `Il tuo codice OTP per il cambio password è: ${otpCode}`,
       html: htmlContent,
     };
 
-    transporter.sendMail(sendStafferRemovalMail, (error, info) => {
+    transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         return console.log(error);
       }
@@ -75,65 +72,24 @@ class EmailService {
     });
   }
 
-  static sendCustomerWelcomeMail(email, name, surname, password) {
+  static sendPasswordResetConfirmation(email) {
     const emailTemplatePath = path.join(
       __dirname,
-      "EmailTemplate/WelcomeCustomerModel.html"
+      "EmailTemplate/EmailReset.html"
     );
     const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
 
-    let htmlContent = emailTemplate
-      .replace("${name}", name)
-      .replace("${surname}", surname)
-      .replace("${email}", email)
-      .replace("${password}", password);
+    let htmlContent = emailTemplate;
 
-    const sendCustomerWelcomeMail = {
+    const mailOptions = {
       from: `Space Design Italia <${mailData.mail}>`,
       to: email,
-      subject: "Benvenuto nel mondo di Space Design Italia!",
-      text:
-        "Caro/a " +
-        name +
-        " " +
-        surname +
-        ",\n\nSiamo entusiasti di darti il benvenuto nel fantastico mondo di Space Design Italia! Non vediamo l'ora di iniziare questa avventura insieme e creare qualcosa di straordinario! 🚀✨",
+      subject: "Importante: Conferma Modifica Password",
+      text: `Gentile dipendente, La informiamo che è stata effettuata una modifica della password del Suo account. Se non ha effettuato Lei questa modifica, La preghiamo di procedere immediatamente con il reset della password.`,
       html: htmlContent,
     };
 
-    transporter.sendMail(sendCustomerWelcomeMail, (error, info) => {
-      if (error) {
-        return console.log(error);
-      }
-      console.log("Message sent: %s", info.messageId);
-    });
-  }
-
-  static sendPasswordChangedMail(email, name, surname) {
-    const emailTemplatePath = path.join(
-      __dirname,
-      "EmailTemplate/PasswordChanged.html"
-    );
-    const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
-
-    let htmlContent = emailTemplate
-      .replace("${name}", name)
-      .replace("${surname}", surname);
-
-    const sendPasswordChangedMail = {
-      from: `Space Design Italia <${mailData.mail}>`,
-      to: email,
-      subject: "Password di accesso modificata!",
-      text:
-        "Caro/a " +
-        name +
-        " " +
-        surname +
-        ",\n\nLa tua password di accesso è stata modificata!",
-      html: htmlContent,
-    };
-
-    transporter.sendMail(sendPasswordChangedMail, (error, info) => {
+    transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         return console.log(error);
       }

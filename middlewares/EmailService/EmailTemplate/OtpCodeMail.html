@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codice OTP - Cambio Password</title>
+    <style>
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #2c2c2c;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 0;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background-color: #1c1c1c;
+        color: white;
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .header h1 {
+        margin: 0;
+        font-weight: 300;
+        font-size: 24px;
+        letter-spacing: 1px;
+      }
+      .content {
+        padding: 40px 30px;
+        background-color: #ffffff;
+      }
+      .otp-code {
+        font-size: 36px;
+        font-weight: 300;
+        text-align: center;
+        color: #1c1c1c;
+        padding: 30px;
+        margin: 30px 0;
+        background-color: #f8f8f8;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        letter-spacing: 4px;
+      }
+      .message {
+        color: #4a4a4a;
+        font-size: 16px;
+        line-height: 1.8;
+        margin-bottom: 25px;
+      }
+      .footer {
+        text-align: center;
+        padding: 30px;
+        background-color: #f8f8f8;
+        color: #8c8c8c;
+        font-size: 13px;
+        border-top: 1px solid #e0e0e0;
+      }
+      .logo {
+        margin-bottom: 20px;
+      }
+      .signature {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+        color: #6c6c6c;
+        font-size: 14px;
+      }
+      .warning {
+        font-size: 13px;
+        color: #8c8c8c;
+        font-style: italic;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">
+          <img
+            src="https://app.spacedesign-italia.it/assets/SpaceDesignLogo-1O_EfXK_.png"
+            alt="Space Design Italia"
+            style="max-width: 200px"
+          />
+        </div>
+        <h1>Codice di Verifica</h1>
+      </div>
+      <div class="content">
+        <div class="message">
+          Gentile utente,<br />
+          ecco il tuo codice di verifica per il cambio password:
+        </div>
+        <div class="otp-code">${otpCode}</div>
+        <div class="message">
+          Questo codice scadrà tra 10 minuti per motivi di sicurezza.
+        </div>
+        <div class="warning">
+          Se non hai richiesto questo codice, ti preghiamo di ignorare questa
+          email.
+        </div>
+        <div class="signature">
+          Cordiali saluti,<br />
+          Il team di Space Design Italia
+        </div>
+      </div>
+      <div class="footer">
+        Questa è un'email automatica. Si prega di non rispondere a questo
+        indirizzo.
+      </div>
+    </div>
+  </body>
+</html>
