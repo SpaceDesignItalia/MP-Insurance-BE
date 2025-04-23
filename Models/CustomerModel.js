@@ -51,14 +51,15 @@ class StafferModel {
 
   static createNewCustomer(db, CustomerData) {
     return new Promise((resolve, reject) => {
-      const query = `INSERT INTO public.client("firstName", "lastName", "phoneNumber", "email")
-	  VALUES ( $1, $2, $3, $4) RETURNING "clientId"`;
+      const query = `INSERT INTO public.client("firstName", "lastName", "phoneNumber", "email",  "address")
+	  VALUES ( $1, $2, $3, $4, $5) RETURNING "clientId"`;
 
       const values = [
         CustomerData.firstName,
         CustomerData.lastName,
         CustomerData.phoneNumber,
         CustomerData.email,
+        CustomerData.address,
       ];
 
       db.query(query, values, (error, result) => {
@@ -96,14 +97,15 @@ class StafferModel {
 
   static updateCustomerData(db, CustomerData) {
     return new Promise((resolve, reject) => {
-      const query = `UPDATE public.client SET "firstName" = $1, "lastName" = $2, "phoneNumber" = $3, "email" = $4
-      WHERE "clientId" = $5`;
+      const query = `UPDATE public.client SET "firstName" = $1, "lastName" = $2, "phoneNumber" = $3, "email" = $4, "address" = $5
+      WHERE "clientId" = $6`;
 
       const values = [
         CustomerData.firstName,
         CustomerData.lastName,
         CustomerData.phoneNumber,
         CustomerData.email,
+        CustomerData.address,
         CustomerData.clientId,
       ];
 
