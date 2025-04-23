@@ -31,6 +31,14 @@ const policyGET = (db) => {
     PolicyController.getExpiringPolicies(req, res, db);
   });
 
+  router.get(
+    "/GetPolicyHistoryByClientId",
+    authenticateMiddleware,
+    (req, res) => {
+      PolicyController.getPolicyHistoryByClientId(req, res, db);
+    }
+  );
+
   return router; // Return the router to allow usage by the main app
 };
 

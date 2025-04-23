@@ -160,6 +160,19 @@ class PolicyController {
       console.log(error);
     }
   }
+
+  static async getPolicyHistoryByClientId(req, res, db) {
+    try {
+      const clientId = req.query.clientId;
+      const policyHistory = await Policy.getPolicyHistoryByClientId(
+        db,
+        clientId
+      );
+      res.status(200).json(policyHistory);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 module.exports = PolicyController;

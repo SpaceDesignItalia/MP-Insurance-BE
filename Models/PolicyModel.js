@@ -60,6 +60,7 @@ class PolicyModel {
         INNER JOIN public."insuranceCompany" USING("companyId")
         LEFT JOIN public."suspendedPolicy" USING("policyId")
         WHERE "vehicleId" = $1
+        ORDER BY "statusId"
       `;
 
       db.query(query, [vehicleId], (error, results) => {
@@ -616,6 +617,56 @@ class PolicyModel {
           return reject(error);
         }
         resolve(results.rows);
+      });
+    });
+  }
+
+  static getPolicyHistoryByClientId(db, clientId) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT "policyId", CONCAT("firstName", ' ', "lastName") AS "fullName", "email", "typeId", "duration", 
+        "amount", "startDate", "endDate","brand", "model", "licensePlate", "status", "paymentStatus", "companyName", "companyLogo", "note", "startSuspensionDate", client."clientId"
+        FROM public."policy" 
+        INNER JOIN public."client" USING("clientId")
+        INNER JOIN public."vehicle" USING("vehicleId")
+        INNER JOIN public."policyStatus" USING("statusId")
+        INNER JOIN public."policyPaymentStatus" USING("paymentStatusId")
+        INNER JOIN public."insuranceCompany" USING("companyId")
+        LEFT JOIN public."suspendedPolicy" USING("policyId")
+        WHERE client."clientId" = $1
+        ORDER BY "statusId"
+      `;
+
+      db.query(query, [clientId], (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+
+        const policies = results.rows;
+        const policyPromises = policies.map((policy) => {
+          return new Promise((resolve, reject) => {
+            const query = `
+              SELECT "policyId", "name" 
+              FROM public."policyTypes"
+              INNER JOIN public."insuranceType" USING("insuranceTypeId")
+              WHERE "policyId" = $1
+            `;
+
+            db.query(query, [policy.policyId], (error, results) => {
+              if (error) {
+                return reject(error);
+              }
+              // Aggiunge l'elenco dei tipi alla `policy`
+              policy.types = results.rows.map((row) => row.name);
+              resolve(policy);
+            });
+          });
+        });
+
+        // Wait for all policyPromises to resolve
+        Promise.all(policyPromises)
+          .then((policiesWithTypes) => resolve(policiesWithTypes))
+          .catch((error) => reject(error));
       });
     });
   }

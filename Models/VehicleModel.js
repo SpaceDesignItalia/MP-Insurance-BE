@@ -21,7 +21,7 @@ class VehicleModel {
       LEFT JOIN public."policy" p USING("vehicleId")
       LEFT JOIN public."insuranceCompany" ic USING("companyId")
       WHERE v."clientId" = $1
-      AND p."vehicleId" IS NULL;`;
+      AND (p."vehicleId" IS NULL OR p."statusId" = 3 OR p."statusId" = 5);`;
 
       db.query(query, [clientId], (error, results) => {
         if (error) {
