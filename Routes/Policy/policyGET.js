@@ -39,6 +39,10 @@ const policyGET = (db) => {
     }
   );
 
+  router.get("/GetRecentActivities", authenticateMiddleware, (req, res) => {
+    PolicyController.getRecentActivities(req, res, db);
+  });
+
   return router; // Return the router to allow usage by the main app
 };
 
