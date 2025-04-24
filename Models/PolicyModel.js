@@ -742,6 +742,78 @@ class PolicyModel {
       });
     });
   }
+
+  static getAllRecentActivities(db) {
+    return new Promise((resolve, reject) => {
+      const policyQuery = `SELECT policy."policyId", client."firstName", client."lastName", vehicle."brand", vehicle."model", vehicle."licensePlate", policy."createdAt", vehicle."vehicleId" FROM public."policy" 
+      INNER JOIN public."client" USING("clientId")
+      INNER JOIN public."vehicle" USING("vehicleId")
+      ORDER BY policy."createdAt" DESC`;
+      db.query(policyQuery, (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        let activities = [];
+        results.rows.forEach((activity) => {
+          activities.push({
+            policyId: activity.policyId,
+            fullName: `${activity.firstName} ${activity.lastName}`,
+            brand: activity.brand,
+            model: activity.model,
+            licensePlate: activity.licensePlate,
+            vehicleId: activity.vehicleId,
+            clientId: null,
+            createdAt: activity.createdAt,
+            email: null,
+            phoneNumber: null,
+          });
+        });
+        const vehicleQuery = `SELECT "vehicleId", "brand", "model", "licensePlate", "clientId", vehicle."createdAt" FROM public."vehicle" 
+        INNER JOIN public."client" USING("clientId")
+        ORDER BY vehicle."createdAt" DESC`;
+        db.query(vehicleQuery, (error, results) => {
+          if (error) {
+            return reject(error);
+          }
+          results.rows.forEach((activity) => {
+            activities.push({
+              policyId: null,
+              fullName: null,
+              brand: activity.brand,
+              model: activity.model,
+              licensePlate: activity.licensePlate,
+              vehicleId: activity.vehicleId,
+              clientId: activity.clientId,
+              createdAt: activity.createdAt,
+              email: null,
+              phoneNumber: null,
+            });
+          });
+          const customerQuery = `SELECT "clientId", "firstName", "lastName", "email", "phoneNumber", "createdAt" FROM public."client" ORDER BY "createdAt" DESC`;
+          db.query(customerQuery, (error, results) => {
+            if (error) {
+              return reject(error);
+            }
+            results.rows.forEach((activity) => {
+              activities.push({
+                policyId: null,
+                fullName: `${activity.firstName} ${activity.lastName}`,
+                brand: null,
+                model: null,
+                licensePlate: null,
+                vehicleId: null,
+                clientId: activity.clientId,
+                createdAt: activity.createdAt,
+                email: activity.email,
+                phoneNumber: activity.phoneNumber,
+              });
+            });
+            resolve(activities);
+          });
+        });
+      });
+    });
+  }
 }
 
 module.exports = PolicyModel;

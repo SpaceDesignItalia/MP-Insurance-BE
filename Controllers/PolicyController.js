@@ -182,6 +182,15 @@ class PolicyController {
       console.log(error);
     }
   }
+
+  static async getAllRecentActivities(req, res, db) {
+    try {
+      let activities = await Policy.getAllRecentActivities(db);
+      res.status(200).json(activities);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 module.exports = PolicyController;
